@@ -11,10 +11,11 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import fr.diginamic.jdbc.entites.Fournisseur;
+import fr.diginamic.jdbc.exceptions.DaoException;
 
 public class FournisseurDaoJdbc implements FournisseurDao {
 	@Override
-	public List<Fournisseur> extraire() throws SQLException, ClassNotFoundException {
+	public List<Fournisseur> extraire() {
 		//Création de la liste de fournisseurs vide
 		List<Fournisseur> listeFournisseurs = new ArrayList<>(); 
 		try(Connection connexion = connexionCleverCloud()){
@@ -28,12 +29,14 @@ public class FournisseurDaoJdbc implements FournisseurDao {
 					listeFournisseurs.add(new Fournisseur(id,nom));
 				}
 			}
+		} catch (SQLException e) {
+			throw new DaoException(e);
 		}
 		return listeFournisseurs;
 	}
 
 	@Override
-	public void insert(Fournisseur fournisseur) throws ClassNotFoundException, SQLException {	
+	public void insert(Fournisseur fournisseur) {	
 		try(Connection connexion = connexionCleverCloud()){
 			connexion.setAutoCommit(false);
 			try(Statement statement = connexion.createStatement();  // Création du statement
@@ -48,11 +51,13 @@ public class FournisseurDaoJdbc implements FournisseurDao {
 				System.err.println(e.getMessage());
 				connexion.rollback();
 			}
+		} catch (SQLException e) {
+			throw new DaoException(e);
 		}
 	}
 
 	@Override
-	public int update(String ancienNom, String nouveauNom) throws ClassNotFoundException, SQLException {
+	public int update(String ancienNom, String nouveauNom) {
 		int lignes = 0;
 		try(Connection connexion = connexionCleverCloud()){
 			connexion.setAutoCommit(false);
@@ -68,13 +73,15 @@ public class FournisseurDaoJdbc implements FournisseurDao {
 				System.err.println(e.getMessage());
 				connexion.rollback();
 			}
+		} catch (SQLException e) {
+			throw new DaoException(e);
 		}
 		return lignes;
 
 	}
 
 	@Override
-	public boolean delete(Fournisseur fournisseur) throws ClassNotFoundException, SQLException {
+	public boolean delete(Fournisseur fournisseur) {
 		boolean supprime = false;
 		try(Connection connexion = connexionCleverCloud()){
 			connexion.setAutoCommit(false);
@@ -92,21 +99,32 @@ public class FournisseurDaoJdbc implements FournisseurDao {
 				System.err.println(e.getMessage());
 				connexion.rollback();
 			}
+		} catch (SQLException e) {
+			throw new DaoException(e);
 		}
 		return supprime;
 	}
 
 
-	private Connection connexionCleverCloud() throws SQLException, ClassNotFoundException {
+	private Connection connexionCleverCloud() {
 		// Lecture du fichier de propriétés
 		ResourceBundle database = ResourceBundle.getBundle("clevercloud-database");
 		// Enregistrement du pilote
-		Class.forName(database.getString("database.driver"));
+		try {
+			Class.forName(database.getString("database.driver"));
+		} catch (ClassNotFoundException e) {
+			throw new DaoException(e);
+		}
 		// Création de la connexion
 		String url = database.getString("database.url");
 		String utilisateur = database.getString("database.user");
 		String motDePasse = database.getString("database.pass");	
-		Connection connexion = DriverManager.getConnection(url, utilisateur, motDePasse);
+		Connection connexion;
+		try {
+			connexion = DriverManager.getConnection(url, utilisateur, motDePasse);
+		} catch (SQLException e) {
+			throw new DaoException(e);
+		}
 		return connexion;	
 	}
 

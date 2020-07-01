@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.diginamic.jdbc.entites.Fournisseur;
+import fr.diginamic.jdbc.exceptions.DaoException;
 
 public class TestSelect {
 
@@ -14,7 +15,7 @@ public class TestSelect {
 		List<Fournisseur> listeFournisseurs = new ArrayList<>();
 		try {
 			listeFournisseurs = daoF.extraire();
-		} catch (ClassNotFoundException | SQLException e) {
+		} catch (DaoException e) {
 			System.err.println(e.getMessage());
 		}
 		//Affichage de la liste des fournisseurs

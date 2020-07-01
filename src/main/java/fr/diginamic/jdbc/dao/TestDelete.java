@@ -3,6 +3,7 @@ package fr.diginamic.jdbc.dao;
 import java.sql.SQLException;
 
 import fr.diginamic.jdbc.entites.Fournisseur;
+import fr.diginamic.jdbc.exceptions.DaoException;
 
 public class TestDelete {
 
@@ -12,7 +13,7 @@ public class TestDelete {
 		boolean supprime=false;
 		try {
 			supprime = daoF.delete(new Fournisseur(4,"La Maison des Peintures"));
-		} catch (ClassNotFoundException | SQLException e) {
+		} catch (DaoException e) {
 			System.err.println(e.getMessage());
 		}
 		System.out.println((supprime)?"Ligne supprimée":"Aucune ligne supprimée");
