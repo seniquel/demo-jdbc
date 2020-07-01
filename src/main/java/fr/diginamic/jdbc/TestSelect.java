@@ -38,6 +38,9 @@ public class TestSelect {
 					listeFournisseurs.add(new Fournisseur(id,nom));
 				}
 			}
+			catch(SQLException e) {
+				System.err.println(e.getMessage());
+			}
 		}
 		//Affichage de la liste des fournisseurs
 		System.out.println("ID\tNOM");
