@@ -28,9 +28,6 @@ public class FournisseurDaoJdbc implements FournisseurDao {
 					listeFournisseurs.add(new Fournisseur(id,nom));
 				}
 			}
-			catch(SQLException e) {
-				System.err.println(e.getMessage());
-			}
 		}
 		return listeFournisseurs;
 	}
@@ -98,6 +95,7 @@ public class FournisseurDaoJdbc implements FournisseurDao {
 		}
 		return supprime;
 	}
+
 
 	private Connection connexionCleverCloud() throws SQLException, ClassNotFoundException {
 		// Lecture du fichier de propriétés
